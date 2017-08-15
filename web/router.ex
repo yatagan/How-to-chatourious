@@ -43,14 +43,15 @@ defmodule Chatourius.Router do
   # Add this block
   scope "/", Chatourius do
     pipe_through :protected
-    get "/", PageController, :index
+    get "/", PageController, :rooms_list
+    get "/r/:room", PageController, :room
     # Add protected routes below
   end
 
   defp put_user_token(conn, _) do
     current_user = Coherence.current_user(conn).id
     user_id_token = Phoenix.Token.sign(conn, "user_id", Coherence.current_user(conn).id)
-    
+
     conn
     |> assign(:user_id, user_id_token)
   end

@@ -3,10 +3,17 @@ defmodule Chatourius.RoomChannel do
   alias Chatourius.Presence
   alias Chatourius.Repo
   alias Chatourius.User
+  alias Chatourius.RoomsMap
 
-  def join("room", _payload, socket) do
-    send(self, :after_join)
+  def join("room:" <> room_id, _payload, socket) do
+    RoomsMap.increment(room_id)
+    socket = assign(socket, :room_id, room_id)
+    send(self(), :after_join)
     {:ok, socket}
+  end
+
+  def terminate(_msg, socket) do
+    RoomsMap.decrement(socket.assigns[:room_id])
   end
 
   def handle_info(:after_join, socket) do

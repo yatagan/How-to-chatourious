@@ -1,0 +1,9 @@
+<h2>Rooms list</h2>
+
+<%= if Enum.empty?(@rooms) do %>
+  <p><h4>No rooms. To create a room go to URL /r/%your_room%
+<% else %>
+  <%= for room <- @rooms do %>
+    <%= link room, to: page_path(@conn, :room, room), class: "btn btn-default" %>
+  <% end %>
+<% end %>

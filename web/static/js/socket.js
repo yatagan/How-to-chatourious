@@ -4,7 +4,7 @@ let socket = new Socket("/socket", {
   params: {token: window.userToken}})
 
 socket.connect()
-let channel = socket.channel("room", {})
+let channel = socket.channel("room:" + window.roomId, {})
 let message = $('#message-input')
 let chatMessages = document.getElementById("chat-messages")
 let presences = {}

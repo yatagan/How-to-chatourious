@@ -11,6 +11,7 @@ defmodule Chatourius do
       supervisor(Chatourius.Repo, []),
       supervisor(Chatourius.Endpoint, []),
       supervisor(Chatourius.Presence, []),
+      supervisor(Chatourius.RoomsMap, []),
     ]
 
     # See http://elixir-lang.org/docs/stable/elixir/Supervisor.html

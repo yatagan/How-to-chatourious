@@ -2,8 +2,8 @@
   <div class="col-md-9">
     <div class="panel panel-default chat-room">
       <div class="panel-heading">
-        Hello <%=  Coherence.current_user(@conn).name %>
-        <%= link "Sign out", to: session_path(@conn, :delete), method: :delete %>
+        Wellcome to <b><%= assigns[:room_id] %></b>, dear <b><%=  Coherence.current_user(@conn).name %></b>
+        [ <%= link "Sign out", to: session_path(@conn, :delete), method: :delete %> ]
       </div>
       <div id="chat-messages" class="panel-body panel-messages"></div>
 
@@ -20,4 +20,8 @@
       </div>
     </div>
   </div>
+
+  <script>window.userToken = "<%= assigns[:user_id] %>"</script>
+  <script>window.roomId = "<%= assigns[:room_id] %>"</script>
+  <script src="<%= static_path(@conn, "/js/app.js") %>"></script>
 </div>
