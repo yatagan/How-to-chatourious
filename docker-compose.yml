@@ -1,0 +1,22 @@
+version: '2'
+services:
+  db:
+    image: postgres
+    ports:
+      - "5432:5432"
+    environment:
+      POSTGRES_USER: chatourius
+      POSTGRES_PASSWORD: chatourius
+  web:
+    build: .
+    environment:
+      MIX_ENV: "prod"
+      DB_USER: "chatourius"
+      DB_PASSWORD: "chatourius"
+    # command: bash -c "mix ecto.migrate && mix phoenix.server"
+    # volumes:
+    #   - .:/app
+    ports:
+      - "4000:4000"
+    depends_on:
+      - db

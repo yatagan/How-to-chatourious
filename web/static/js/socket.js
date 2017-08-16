@@ -21,14 +21,19 @@ let renderUsers = (presences) => {
   .map(presence => `
     <li>${presence.user}</li>`).join("")
 }
+let renderLine = (text) => {
+  let template = document.createElement("div");
+  template.innerHTML = `${text}<br>`
+
+  chatMessages.appendChild(template);
+  chatMessages.scrollTop = chatMessages.scrollHeight;
+}
 let renderMessage = (message) => {
   let template = document.createElement("div");
   let date = message.inserted_at ?
     moment.tz(message.inserted_at, "Etc/UTC").tz(moment.tz.guess()) : moment.default();
-  template.innerHTML = `<i>[${date.format('HH:mm:ss')}]</i> <b>&lt;${message.user}&gt;</b> ${message.text}<br>`
 
-  chatMessages.appendChild(template);
-  chatMessages.scrollTop = chatMessages.scrollHeight;
+  renderLine(`<i>[${date.format('HH:mm:ss')}]</i> <b>&lt;${message.user}&gt;</b> ${message.text}`);
 }
 
 message.focus();
@@ -59,11 +64,11 @@ channel.on('last_messages', data => {
 });
 
 channel.on('user:joined', user => {
-  renderMessage({user: user.name, text: "joined the chatroom"});
+  renderLine(`*** ${user.name} joined the chatroom ***`);
 });
 
 channel.on('user:left', user => {
-  renderMessage({user: user.name, text: "left the chatroom"});
+  renderLine(`*** ${user.name} left the chatroom ***`);
 });
 
 channel.join()
