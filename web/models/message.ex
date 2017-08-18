@@ -7,6 +7,7 @@ defmodule Chatourius.Message do
   schema "messages" do
     field :text, :string
     field :room_id, :string
+    field :type, :string # "message" or "event"
     belongs_to :user, Chatourius.User
 
     timestamps()
@@ -17,8 +18,8 @@ defmodule Chatourius.Message do
   """
   def changeset(struct, params \\ %{}) do
     struct
-    |> cast(params, [:text, :room_id, :user_id])
-    |> validate_required([:text, :room_id, :user_id])
+    |> cast(params, [:text, :room_id, :user_id, :type])
+    |> validate_required([:text, :room_id, :user_id, :type])
   end
 
   def store_message(params) do
@@ -38,6 +39,7 @@ defmodule Chatourius.Message do
     |> Enum.map fn msg ->
         %{inserted_at: Ecto.DateTime.to_iso8601(msg.inserted_at),
           user: msg.user.name,
-          text: msg.text} end
+          text: msg.text,
+          type: msg.type} end
   end
 end

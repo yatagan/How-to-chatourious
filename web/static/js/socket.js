@@ -28,12 +28,17 @@ let renderLine = (text) => {
   chatMessages.appendChild(template);
   chatMessages.scrollTop = chatMessages.scrollHeight;
 }
+
 let renderMessage = (message) => {
   let template = document.createElement("div");
   let date = message.inserted_at ?
     moment.tz(message.inserted_at, "Etc/UTC").tz(moment.tz.guess()) : moment.default();
 
   renderLine(`<i>[${date.format('HH:mm:ss')}]</i> <b>&lt;${message.user}&gt;</b> ${message.text}`);
+}
+
+let renderEvent = (username, action) => {
+  renderLine(`*** ${username} ${action} the chatroom ***`);
 }
 
 message.focus();
@@ -60,15 +65,20 @@ channel.on('presence_diff', diff => {
 });
 
 channel.on('last_messages', data => {
-  data.last_messages.forEach(renderMessage);
+  data.last_messages.forEach((message) => {
+    if (message.type == "message")
+      renderMessage(message);
+    else if (message.type == "event")
+      renderEvent(message.user, message.text);
+  });
 });
 
 channel.on('user:joined', user => {
-  renderLine(`*** ${user.name} joined the chatroom ***`);
+  renderEvent(user.name, "joined");
 });
 
 channel.on('user:left', user => {
-  renderLine(`*** ${user.name} left the chatroom ***`);
+  renderEvent(user.name, "left");
 });
 
 channel.join()

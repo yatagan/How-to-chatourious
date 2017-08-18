@@ -16,6 +16,11 @@ defmodule Chatourius.RoomChannel do
   def terminate(_msg, socket) do
     user = Repo.get(User, socket.assigns.user_id)
     broadcast! socket, "user:left", %{name: user.name}
+    {:ok, _} = Message.store_message(
+      %{user_id: socket.assigns.user_id,
+        room_id: socket.assigns.room_id,
+        text: "left",
+        type: "event"})
     RoomsMap.decrement(socket.assigns[:room_id])
   end
 
@@ -31,6 +36,11 @@ defmodule Chatourius.RoomChannel do
     push socket, "last_messages", %{last_messages: last_messages}
 
     broadcast! socket, "user:joined", %{name: user.name}
+    {:ok, _} = Message.store_message(
+      %{user_id: socket.assigns.user_id,
+        room_id: socket.assigns.room_id,
+        text: "joined",
+        type: "event"})
 
     {:noreply, socket}
   end
@@ -42,7 +52,7 @@ defmodule Chatourius.RoomChannel do
     message = payload["message"]
 
     {:ok, stored_message} =
-      Message.store_message(%{user_id: user_id, room_id: room_id, text: message})
+      Message.store_message(%{user_id: user_id, room_id: room_id, text: message, type: "message"})
 
     user = Repo.get(User, user_id)
 
